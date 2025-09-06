@@ -9,11 +9,14 @@
   <!-- daisy UI and tailwind css -->
   <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <link rel="stylesheet" href="./style.css">
 </head>
 
-<body>
+<body class="inter-font">
   <header class="bg-[#15803d]">
     <!-- <nav class="max-w-11/12 mx-auto p-4 flex justify-between items-center">
+
       <div>
         <h1 class="text-white">Green Earth</h1>
       </div>
@@ -29,7 +32,8 @@
         <button class="py-1 px-4 bg-[#facc15] text-[#15803d] rounded-2xl">Plant a Tree</button>
       </div>
     </nav> -->
-    <div class="navbar bg-base-100 shadow-sm bg-[#15803d] text-white p-3 mx-auto max-w-11/12">
+    <!-- daisy theke neya  -->
+    <div class="navbar bg-base-100 shadow-sm bg-[#15803d] text-white p-3 mx-auto md:max-w-11/12">
       <div class="navbar-start">
         <div class="dropdown">
           <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
@@ -58,8 +62,35 @@
         <button class="py-1 px-4 bg-[#facc15] text-[#15803d] rounded-2xl">Plant a Tree</button>
       </div>
     </div>
-
   </header>
+  <main>
+    <!-- banner Section -->
+    <section class="flex items-center justify-between bg-[#cff0dc] pt-10 ">
+      <div class="">
+        <img src="./assets/hero-leaf1.png" alt="">
+      </div>
+      <div class="text-center space-y-5">
+        <h1 class="text-4xl font-bold">Plant a Tree, Grow a Future</h1>
+        <p>Join our mission to plant 1 million trees and make the Earth greener for future
+          generations.</p>
+        <button class="py-1 px-4 bg-[#facc15] text-[#15803d] rounded-2xl">Get Involved</button>
+      </div>
+      <div>
+        <img src="./assets/hero-leaf2.png" alt="">
+      </div>
+
+    </section>
+    <!-- choose your trees section -->
+    <section class="bg-[#f0fdf4] py-20">
+      <h1 class="text-center text-3xl">Choose Your Trees</h1>
+
+
+
+
+      <!-- about the campaign section -->
+
+    </section>
+  </main>
 </body>
 
 </html>
