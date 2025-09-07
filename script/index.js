@@ -3,8 +3,10 @@ const plantsCardContainer = document.getElementById("plantsCardContainer");
 const cartCardContainer = document.getElementById("cartCardContainer");
 
 const modalContainer = document.getElementById("modalContainer");
+const totalPriceContainer = document.getElementById("totalPrice");
 
 let cartItems = [];
+
 const categoryTreeLoad = () => {
   fetch("https://openapi.programming-hero.com/api/categories")
     .then((res) => res.json())
@@ -61,6 +63,7 @@ const loadPlantCategoryTrees = (id) => {
     })
     .catch((err) => {
       allPlantsTreeLoad();
+      console.log(err);
     });
 };
 const showPlantCategoryTrees = (plantsTrees) => {
@@ -95,27 +98,20 @@ plantsCardContainer.addEventListener("click", (e) => {
   if (e.target.innerText === "Add to Cart") {
     // console.log("cart click");
     const title = e.target.parentNode.children[0].innerText;
-    const price = e.target.parentNode.children[2].children[1].innerText;
-    const id = e.target.parentNode.children;
-    console.log(id);
-
+    const price = Number(
+      e.target.parentNode.children[2].children[1].children[0].innerText
+    );
+    const id = e.target.parentNode.children[0].id;
     cartItems.push({
+      id: `${id}`,
       name: `${title}`,
-      price: `${price}`,
+      price: price,
+      count: 0,
     });
-
-    cartCardContainer.innerHTML += `
-      <div class="bg-[#f0fdf4] p-3 rounded-lg flex justify-between items-center mt-3">
-              <div>
-                <h1 class="font-bold">
-                  Mango tree
-                </h1>
-                <p>$400*1</p>
-              </div>
-              <div>❌</div>
-
-            </div>
-    `;
+    showCartItemsAndTotalPrice(cartItems);
+    // console.log(price);
+    // console.log(title);
+    // console.log(id);
   }
   if (e.target.className.includes("title-click")) {
     modalLoadPlantsTree(e);
@@ -124,11 +120,43 @@ plantsCardContainer.addEventListener("click", (e) => {
   // console.log(e);
 });
 
+const showCartItemsAndTotalPrice = (cartItems) => {
+  cartCardContainer.innerHTML = "";
+  let totalPrice = 0;
+  for (const item of cartItems) {
+    totalPrice += item.price;
+    // console.log(totalPrice);
+    cartCardContainer.innerHTML += `
+      <div class="bg-[#f0fdf4] p-3 rounded-lg flex justify-between items-center mt-3">
+              <div>
+                <h1 class="font-bold">
+                 ${item.name}
+                </h1>
+                <p>$${item.price}*<span id="countItem">1</span></p>
+              </div>
+              <div onclick="handleDeleteCartItem('${item.id}')">❌</div>
+
+            </div>
+    `;
+  }
+  totalPriceContainer.innerText = totalPrice;
+};
+const handleDeleteCartItem = (itemId) => {
+  const filterCartItem = cartItems.filter(
+    (cartItems) => cartItems.id !== itemId
+  );
+  cartItems = filterCartItem;
+  showCartItemsAndTotalPrice(cartItems);
+};
+
 const allPlantsTreeLoad = () => {
   fetch("https://openapi.programming-hero.com/api/plants")
     .then((res) => res.json())
     .then((data) => {
       showAllPlantsTrees(data.plants);
+    })
+    .catch((err) => {
+      console.log(err);
     });
 };
 
@@ -136,9 +164,9 @@ const showAllPlantsTrees = (allPlantsTrees) => {
   // console.log(allPlantsTrees);
   allPlantsTrees.forEach((singlePlantTree) => {
     plantsCardContainer.innerHTML += `
-     <div class="space-y-2 shadow-xl rounded-sm bg-white p-2 ">
+     <div class="space-y-2 shadow-xl rounded-sm bg-white p-2 h-fit ">
         <img class="mx-auto h-[150px] w-full rounded-t-md" src="${singlePlantTree.image}"/>
-        <div class="p-3 space-y-2">
+        <div class="p-5 space-y-3">
         <h1 id="${singlePlantTree.id}" class=" title-click text-xl font-bold">${singlePlantTree.name}</h1>
         <p>${singlePlantTree.description}</p>
 
@@ -163,12 +191,15 @@ const modalLoadPlantsTree = (e) => {
     .then((data) => {
       // console.log(data.plants);
       showModalPlantTreeDetails(data.plants);
+    })
+    .catch((err) => {
+      console.log(err);
     });
   // console.log(id);
 };
 
 const showModalPlantTreeDetails = (details) => {
-  console.log(details);
+  // console.log(details);
 
   modalContainer.innerHTML = `
       <div class="space-y-2">
@@ -182,5 +213,6 @@ const showModalPlantTreeDetails = (details) => {
   
   `;
 };
+
 categoryTreeLoad();
 allPlantsTreeLoad();
