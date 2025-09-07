@@ -1,5 +1,8 @@
 const categoryTreeContainer = document.getElementById("categoryTreeContainer");
+const plantsCardContainer = document.getElementById("plantsCardContainer");
+const cartCardContainer = document.getElementById("cartCardContainer");
 
+let cartItems = [];
 const categoryTreeLoad = () => {
   fetch("https://openapi.programming-hero.com/api/categories")
     .then((res) => res.json())
@@ -15,7 +18,7 @@ const categoryAllTreesLoad = () => {
   fetch("https://openapi.programming-hero.com/api/plants")
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
+      // console.log(data);
     })
     .catch((err) => {
       console(err);
@@ -24,7 +27,7 @@ const categoryAllTreesLoad = () => {
 const showCategoryTree = (categoryTrees) => {
   categoryTrees.forEach((categoryTree) => {
     categoryTreeContainer.innerHTML += `
-        <button class=" hover:bg-[#15803d] hover:text-white p-1 text-left rounded-lg">${categoryTree.category_name}</button>
+        <button id="${categoryTree.id}" class=" hover:bg-[#15803d] hover:text-white p-1  rounded-lg">${categoryTree.category_name}</button>
     `;
     // console.log(categoryTree.category_name);
   });
@@ -36,16 +39,111 @@ const showCategoryTree = (categoryTrees) => {
       button.classList.remove("bg-[#15803d]");
       button.classList.remove("text-white");
     });
-    console.log(buttons);
+    // console.log(buttons);
 
     if (e.target.localName === "button") {
       e.target.classList.add("bg-[#15803d]");
       e.target.classList.add("text-white");
+
+      loadPlantCategoryTrees(e.target.id);
     }
   });
 };
-const showAllCategoryTrees = () => {
-  console.log("click all");
+const loadPlantCategoryTrees = (id) => {
+  // console.log(id);
+
+  fetch(`https://openapi.programming-hero.com/api/category/${id}`)
+    .then((res) => res.json())
+    .then((data) => {
+      showPlantCategoryTrees(data.plants);
+    })
+    .catch((err) => {
+      allPlantsTreeLoad();
+    });
+};
+const showPlantCategoryTrees = (plantsTrees) => {
+  plantsCardContainer.innerHTML = "";
+  plantsTrees.forEach((plantTree) => {
+    plantsCardContainer.innerHTML += `
+     <div class="space-y-2 shadow-xl rounded-sm bg-white p-2 ">
+        <img class="mx-auto h-[150px] w-full rounded-t-md" src="${plantTree.image}"/>
+        <div class="p-3 space-y-2">
+        <h1 class="text-xl font-bold">${plantTree.name}</h1>
+        <p>${plantTree.description}</p>
+
+        <div class="flex justify-between">
+        <button class="border-1 border-emerald-400 rounded-xl p-2 text-green-500">${plantTree.category}</button>
+        <p class="text-green-800 font-bold">$<span>${plantTree.price}</span></p>
+        
+        </div>
+            <button class="bg-green-600 w-full p-2 rounded-2xl">Add to Cart</button>
+
+        </div>
+     
+     </div>
+    
+    
+    
+    `;
+    console.log(plantTree);
+  });
+};
+
+plantsCardContainer.addEventListener("click", (e) => {
+  if (e.target.innerText === "Add to Cart") {
+    console.log("cart click");
+
+    cartItems.push({
+      name: "Mango",
+      price: "1200",
+    });
+
+    cartCardContainer.innerHTML += `
+      <div class="bg-[#f0fdf4] p-3 rounded-lg flex justify-between items-center mt-3">
+              <div>
+                <h1 class="font-bold">
+                  Mango tree
+                </h1>
+                <p>$400*1</p>
+              </div>
+              <div>❌</div>
+
+            </div>
+    `;
+  }
+});
+
+const allPlantsTreeLoad = () => {
+  fetch("https://openapi.programming-hero.com/api/plants")
+    .then((res) => res.json())
+    .then((data) => {
+      showAllPlantsTrees(data.plants);
+    });
+};
+
+const showAllPlantsTrees = (allPlantsTrees) => {
+  console.log(allPlantsTrees);
+  allPlantsTrees.forEach((singlePlantTree) => {
+    plantsCardContainer.innerHTML += `
+     <div class="space-y-2 shadow-xl rounded-sm bg-white p-2 ">
+        <img class="mx-auto h-[150px] w-full rounded-t-md" src="${singlePlantTree.image}"/>
+        <div class="p-3 space-y-2">
+        <h1 class="text-xl font-bold">${singlePlantTree.name}</h1>
+        <p>${singlePlantTree.description}</p>
+
+        <div class="flex justify-between">
+        <button class="border-1 border-emerald-400 rounded-xl p-2 text-green-500">${singlePlantTree.category}</button>
+        <p class="text-green-800 font-bold">$<span>${singlePlantTree.price}</span></p>
+        
+        </div>
+            <button class="bg-green-600 w-full p-2 rounded-2xl">Add to Cart</button>
+
+        </div>
+     
+     </div>
+    
+    `;
+  });
 };
 categoryTreeLoad();
-categoryAllTreesLoad();
+allPlantsTreeLoad();
