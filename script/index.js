@@ -4,7 +4,7 @@ const cartCardContainer = document.getElementById("cartCardContainer");
 
 const modalContainer = document.getElementById("modalContainer");
 const totalPriceContainer = document.getElementById("totalPrice");
-
+const loadingContainer = document.getElementById("loadingContainer");
 let cartItems = [];
 
 const categoryTreeLoad = () => {
@@ -12,28 +12,22 @@ const categoryTreeLoad = () => {
     .then((res) => res.json())
     .then((data) => {
       // console.log(data);
+      loading();
       showCategoryTree(data.categories);
     })
     .catch((err) => {
+      errorMessage();
       console(err);
     });
 };
-const categoryAllTreesLoad = () => {
-  fetch("https://openapi.programming-hero.com/api/plants")
-    .then((res) => res.json())
-    .then((data) => {
-      // console.log(data);
-    })
-    .catch((err) => {
-      console(err);
-    });
-};
+
 const showCategoryTree = (categoryTrees) => {
   categoryTrees.forEach((categoryTree) => {
     categoryTreeContainer.innerHTML += `
-        <button id="${categoryTree.id}" class=" hover:bg-[#15803d] hover:text-white p-1  rounded-lg">${categoryTree.category_name}</button>
+        <button id="${categoryTree.id}" class="category-btn hover:bg-[#15803d] hover:text-white p-1  rounded-lg">${categoryTree.category_name}</button>
     `;
     // console.log(categoryTree.category_name);
+    loadingContainer.innerHTML = "";
   });
 
   categoryTreeContainer.addEventListener("click", (e) => {
@@ -48,7 +42,8 @@ const showCategoryTree = (categoryTrees) => {
     if (e.target.localName === "button") {
       e.target.classList.add("bg-[#15803d]");
       e.target.classList.add("text-white");
-
+    }
+    if (e.target.className.includes("category-btn")) {
       loadPlantCategoryTrees(e.target.id);
     }
   });
@@ -59,10 +54,11 @@ const loadPlantCategoryTrees = (id) => {
   fetch(`https://openapi.programming-hero.com/api/category/${id}`)
     .then((res) => res.json())
     .then((data) => {
+      loading();
       showPlantCategoryTrees(data.plants);
     })
     .catch((err) => {
-      allPlantsTreeLoad();
+      errorMessage();
       console.log(err);
     });
 };
@@ -71,27 +67,26 @@ const showPlantCategoryTrees = (plantsTrees) => {
   plantsTrees.forEach((plantTree) => {
     // console.log(plantTree.id);
     plantsCardContainer.innerHTML += `
-     <div class="space-y-2 shadow-xl rounded-sm bg-white p-2 ">
-        <img class="mx-auto h-[150px] w-full rounded-t-md" src="${plantTree.image}"/>
-        <div  class="p-3 space-y-2">
-        <h1 id="${plantTree.id}" class="title-click text-xl font-bold">${plantTree.name}</h1>
-        <p>${plantTree.description}</p>
+     <div class="space-y-2 shadow-xl rounded-sm bg-white p-2 h-fit ">
+        <img class="mx-auto h-[150px] w-full rounded-md" src="${plantTree.image}"/>
+        <div class="p-5 space-y-3">
+        <h1 id="${plantTree.id}" class=" title-click text-xl font-bold cursor-pointer">${plantTree.name}</h1>
+        <p class="h-[140px]">${plantTree.description}</p>
 
-        <div class="flex justify-between">
+        <div class="flex justify-between items-center">
         <button class="border-1 border-emerald-400 rounded-xl p-2 text-green-500">${plantTree.category}</button>
         <p class="text-green-800 font-bold">$<span>${plantTree.price}</span></p>
         
         </div>
-            <button class="bg-green-600 w-full p-2 rounded-2xl">Add to Cart</button>
+            <button class=" bg-green-600 text-white hover:bg-green-400 hover:text-gray-200 w-full p-2 rounded-2xl mt-3">Add to Cart</button>
 
         </div>
      
      </div>
     
-    
-    
     `;
   });
+  loadingContainer.innerHTML = "";
 };
 
 plantsCardContainer.addEventListener("click", (e) => {
@@ -127,14 +122,14 @@ const showCartItemsAndTotalPrice = (cartItems) => {
     totalPrice += item.price;
     // console.log(totalPrice);
     cartCardContainer.innerHTML += `
-      <div class="bg-[#f0fdf4] p-3 rounded-lg flex justify-between items-center mt-3">
+      <div class="bg-[#f0fdf4] p-3 rounded-xl shadow-sm flex justify-between items-center mb-3">
               <div>
                 <h1 class="font-bold">
                  ${item.name}
                 </h1>
-                <p>$${item.price}*<span id="countItem">1</span></p>
+                <p class="text-gray-500 mt-1">$${item.price}*<span id="countItem">1</span></p>
               </div>
-              <div onclick="handleDeleteCartItem('${item.id}')">❌</div>
+              <div onclick="handleDeleteCartItem('${item.id}')" class="text-2xl"><i class="fa-solid fa-circle-xmark"></i></div>
 
             </div>
     `;
@@ -153,29 +148,33 @@ const allPlantsTreeLoad = () => {
   fetch("https://openapi.programming-hero.com/api/plants")
     .then((res) => res.json())
     .then((data) => {
+      loading();
       showAllPlantsTrees(data.plants);
     })
     .catch((err) => {
+      errorMessage();
       console.log(err);
     });
 };
 
 const showAllPlantsTrees = (allPlantsTrees) => {
   // console.log(allPlantsTrees);
+
+  plantsCardContainer.innerHTML = "";
   allPlantsTrees.forEach((singlePlantTree) => {
     plantsCardContainer.innerHTML += `
      <div class="space-y-2 shadow-xl rounded-sm bg-white p-2 h-fit ">
-        <img class="mx-auto h-[150px] w-full rounded-t-md" src="${singlePlantTree.image}"/>
+        <img class="mx-auto h-[150px] w-full rounded-md" src="${singlePlantTree.image}"/>
         <div class="p-5 space-y-3">
-        <h1 id="${singlePlantTree.id}" class=" title-click text-xl font-bold">${singlePlantTree.name}</h1>
-        <p>${singlePlantTree.description}</p>
+        <h1 id="${singlePlantTree.id}" class=" title-click text-xl font-bold cursor-pointer">${singlePlantTree.name}</h1>
+        <p class="h-[140px]">${singlePlantTree.description}</p>
 
-        <div class="flex justify-between">
+        <div class="flex justify-between items-center">
         <button class="border-1 border-emerald-400 rounded-xl p-2 text-green-500">${singlePlantTree.category}</button>
         <p class="text-green-800 font-bold">$<span>${singlePlantTree.price}</span></p>
         
         </div>
-            <button class="bg-green-600 w-full p-2 rounded-2xl">Add to Cart</button>
+            <button class="bg-green-600 text-white hover:bg-green-400 hover:text-gray-200 w-full p-2 rounded-2xl mt-3">Add to Cart</button>
 
         </div>
      
@@ -183,6 +182,7 @@ const showAllPlantsTrees = (allPlantsTrees) => {
     
     `;
   });
+  loadingContainer.innerHTML = "";
 };
 const modalLoadPlantsTree = (e) => {
   const id = e.target.id;
@@ -202,10 +202,10 @@ const showModalPlantTreeDetails = (details) => {
   // console.log(details);
 
   modalContainer.innerHTML = `
-      <div class="space-y-2">
-         <h1 class="font-bold">${details.name}</h1>
-         <img src="${details.image}"/>
-         <p><span class="font-bold">Category:</span><span>${details.category}</span></p>
+      <div class="space-y-3">
+         <h1 class="font-bold text-xl mb-2">${details.name}</h1>
+         <img class="" src="${details.image}"/>
+         <p><span class="font-bold mt-2">Category:</span><span>${details.category}</span></p>
       <p><span class="font-bold">Price:</span><span>$${details.price}</span></p>
       <p><span class="font-bold">Description:</span><span>${details.description}</span></p>
       
@@ -213,6 +213,15 @@ const showModalPlantTreeDetails = (details) => {
   
   `;
 };
-
+const loading = () => {
+  loadingContainer.innerHTML = `
+  <div class="flex justify-center items-center text-center my-3"><span class="loading loading-spinner text-success"></span></div>
+  `;
+};
+const errorMessage = () => {
+  plantsCardContainer.innerHTML = `
+   <h1>Server Problem</h1>
+  `;
+};
 categoryTreeLoad();
 allPlantsTreeLoad();
