@@ -100,7 +100,7 @@ plantsCardContainer.addEventListener("click", (e) => {
       let countIt = cartItem.count;
       if (cartItem.id === id) {
         cartItem.count += 1;
-        cartItem.totalPrice = cartItem.price + price;
+        cartItem.totalPrice = cartItem.totalPrice + price;
         showCartItemsAndTotalPrice(cartItems);
         return;
       }
