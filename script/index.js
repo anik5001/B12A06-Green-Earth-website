@@ -70,7 +70,7 @@ const showPlantCategoryTrees = (plantsTrees) => {
         <img class="mx-auto h-[150px] w-full rounded-md" src="${plantTree.image}"/>
         <div class="p-3 space-y-1">
         <h1 id="${plantTree.id}" class=" title-click text-xl font-bold cursor-pointer">${plantTree.name}</h1>
-        <p class="h-[160px]">${plantTree.description}</p>
+        <p class="sm:h-[160px]">${plantTree.description}</p>
 
         <div class="flex justify-between items-center">
         <button class="border-1 border-emerald-400 rounded-xl p-2 text-green-500">${plantTree.category}</button>
@@ -168,7 +168,7 @@ const showAllPlantsTrees = (allPlantsTrees) => {
         <img class="mx-auto h-[150px] w-full rounded-md" src="${singlePlantTree.image}"/>
         <div class="p-3 space-y-1">
         <h1 id="${singlePlantTree.id}" class=" title-click text-xl font-bold cursor-pointer">${singlePlantTree.name}</h1>
-        <p class="h-[160px]">${singlePlantTree.description}</p>
+        <p class="sm:h-[160px]">${singlePlantTree.description}</p>
 
         <div class="flex justify-between items-center">
         <button class="border-1 border-emerald-400 rounded-xl p-2 text-green-500">${singlePlantTree.category}</button>
