@@ -4,7 +4,7 @@ const cartCardContainer = document.getElementById("cartCardContainer");
 
 const modalContainer = document.getElementById("modalContainer");
 const totalPriceContainer = document.getElementById("totalPrice");
-const loadingContainer = document.getElementById("loadingContainer");
+
 let cartItems = [];
 
 const categoryTreeLoad = () => {
@@ -27,7 +27,6 @@ const showCategoryTree = (categoryTrees) => {
         <button id="${categoryTree.id}" class="category-btn hover:bg-[#15803d] hover:text-white p-1  rounded-lg">${categoryTree.category_name}</button>
     `;
     // console.log(categoryTree.category_name);
-    loadingContainer.innerHTML = "";
   });
 
   categoryTreeContainer.addEventListener("click", (e) => {
@@ -45,6 +44,7 @@ const showCategoryTree = (categoryTrees) => {
     }
     if (e.target.className.includes("category-btn")) {
       loadPlantCategoryTrees(e.target.id);
+      loading();
     }
   });
 };
@@ -54,7 +54,6 @@ const loadPlantCategoryTrees = (id) => {
   fetch(`https://openapi.programming-hero.com/api/category/${id}`)
     .then((res) => res.json())
     .then((data) => {
-      loading();
       showPlantCategoryTrees(data.plants);
     })
     .catch((err) => {
@@ -86,23 +85,25 @@ const showPlantCategoryTrees = (plantsTrees) => {
     
     `;
   });
-  loadingContainer.innerHTML = "";
 };
 
 plantsCardContainer.addEventListener("click", (e) => {
   if (e.target.innerText === "Add to Cart") {
-    // console.log("cart click");
     const title = e.target.parentNode.children[0].innerText;
     const price = Number(
       e.target.parentNode.children[2].children[1].children[0].innerText
     );
     const id = e.target.parentNode.children[0].id;
+
+    alert(`${title} has been added to the cart`);
+
     cartItems.push({
       id: `${id}`,
       name: `${title}`,
       price: price,
       count: 0,
     });
+
     showCartItemsAndTotalPrice(cartItems);
     // console.log(price);
     // console.log(title);
@@ -127,7 +128,7 @@ const showCartItemsAndTotalPrice = (cartItems) => {
                 <h1 class="font-bold">
                  ${item.name}
                 </h1>
-                <p class="text-gray-500 mt-1">$${item.price}*<span id="countItem">1</span></p>
+                <p class="text-gray-500 mt-1">$${item.price}</p>
               </div>
               <div onclick="handleDeleteCartItem('${item.id}')" class="text-2xl"><i class="fa-solid fa-circle-xmark"></i></div>
 
@@ -145,10 +146,10 @@ const handleDeleteCartItem = (itemId) => {
 };
 
 const allPlantsTreeLoad = () => {
+  loading();
   fetch("https://openapi.programming-hero.com/api/plants")
     .then((res) => res.json())
     .then((data) => {
-      loading();
       showAllPlantsTrees(data.plants);
     })
     .catch((err) => {
@@ -182,7 +183,6 @@ const showAllPlantsTrees = (allPlantsTrees) => {
     
     `;
   });
-  loadingContainer.innerHTML = "";
 };
 const modalLoadPlantsTree = (e) => {
   const id = e.target.id;
@@ -214,13 +214,16 @@ const showModalPlantTreeDetails = (details) => {
   `;
 };
 const loading = () => {
-  loadingContainer.innerHTML = `
-  <div class="flex justify-center items-center text-center my-3"><span class="loading loading-spinner text-success"></span></div>
+  plantsCardContainer.innerHTML = `
+  <div class="flex justify-center items-center text-center my-3 col-span-7"><span class="loading loading-spinner text-success"></span></div>
   `;
 };
 const errorMessage = () => {
   plantsCardContainer.innerHTML = `
-   <h1>Server Problem</h1>
+   <div class="text-center col-span-5 space-y-3">
+       <img class="mx-auto" src="./assets/alert-error.png"/>
+       <h1 class="text-3xl text-gray-700">No Internet</h1>
+   </div>
   `;
 };
 categoryTreeLoad();
