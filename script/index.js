@@ -67,7 +67,7 @@ const showPlantCategoryTrees = (plantsTrees) => {
     // console.log(plantTree.id);
     plantsCardContainer.innerHTML += `
      <div class="space-y-2 shadow-xl rounded-sm bg-white p-2 h-fit ">
-        <img class="mx-auto h-[150px] w-full rounded-md" src="${plantTree.image}"/>
+        <img class="mx-auto h-[170px] w-full rounded-md" src="${plantTree.image}"/>
         <div class="p-3 space-y-1">
         <h1 id="${plantTree.id}" class=" title-click text-xl font-bold cursor-pointer">${plantTree.name}</h1>
         <p class="sm:h-[160px]">${plantTree.description}</p>
@@ -96,12 +96,22 @@ plantsCardContainer.addEventListener("click", (e) => {
     const id = e.target.parentNode.children[0].id;
 
     alert(`${title} has been added to the cart`);
+    for (const cartItem of cartItems) {
+      let countIt = cartItem.count;
+      if (cartItem.id === id) {
+        cartItem.count += 1;
+        cartItem.totalPrice = cartItem.price + price;
+        showCartItemsAndTotalPrice(cartItems);
+        return;
+      }
+    }
 
     cartItems.push({
       id: `${id}`,
       name: `${title}`,
       price: price,
-      count: 0,
+      totalPrice: price,
+      count: 1,
     });
 
     showCartItemsAndTotalPrice(cartItems);
@@ -120,7 +130,7 @@ const showCartItemsAndTotalPrice = (cartItems) => {
   cartCardContainer.innerHTML = "";
   let totalPrice = 0;
   for (const item of cartItems) {
-    totalPrice += item.price;
+    totalPrice += item.totalPrice;
     // console.log(totalPrice);
     cartCardContainer.innerHTML += `
       <div class="bg-[#f0fdf4] p-3 rounded-xl shadow-sm flex justify-between items-center mb-3">
@@ -128,7 +138,7 @@ const showCartItemsAndTotalPrice = (cartItems) => {
                 <h1 class="font-bold">
                  ${item.name}
                 </h1>
-                <p class="text-gray-500 mt-1">$${item.price}</p>
+            <p class="text-gray-500 mt-1">$${item.price}*${item.count}=${item.totalPrice}</p>
               </div>
               <div onclick="handleDeleteCartItem('${item.id}')" class="text-2xl"><i class="fa-solid fa-circle-xmark"></i></div>
 
@@ -165,7 +175,7 @@ const showAllPlantsTrees = (allPlantsTrees) => {
   allPlantsTrees.forEach((singlePlantTree) => {
     plantsCardContainer.innerHTML += `
      <div class="space-y-2 shadow-xl rounded-sm bg-white p-2 h-fit ">
-        <img class="mx-auto h-[150px] w-full rounded-md" src="${singlePlantTree.image}"/>
+        <img class="mx-auto h-[170px] w-full rounded-md" src="${singlePlantTree.image}"/>
         <div class="p-3 space-y-1">
         <h1 id="${singlePlantTree.id}" class=" title-click text-xl font-bold cursor-pointer">${singlePlantTree.name}</h1>
         <p class="sm:h-[160px]">${singlePlantTree.description}</p>
