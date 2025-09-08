@@ -12,7 +12,7 @@ const categoryTreeLoad = () => {
     .then((res) => res.json())
     .then((data) => {
       // console.log(data);
-      loading();
+      // loading();
       showCategoryTree(data.categories);
     })
     .catch((err) => {
@@ -166,9 +166,9 @@ const showAllPlantsTrees = (allPlantsTrees) => {
     plantsCardContainer.innerHTML += `
      <div class="space-y-2 shadow-xl rounded-sm bg-white p-2 h-fit ">
         <img class="mx-auto h-[150px] w-full rounded-md" src="${singlePlantTree.image}"/>
-        <div class="p-5 space-y-3">
+        <div class="p-3 space-y-2">
         <h1 id="${singlePlantTree.id}" class=" title-click text-xl font-bold cursor-pointer">${singlePlantTree.name}</h1>
-        <p class="h-[140px]">${singlePlantTree.description}</p>
+        <p class="h-[142px]">${singlePlantTree.description}</p>
 
         <div class="flex justify-between items-center">
         <button class="border-1 border-emerald-400 rounded-xl p-2 text-green-500">${singlePlantTree.category}</button>
